@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react"; // Tambahkan import Suspense
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Header from "../../../components/Header";
@@ -44,7 +44,15 @@ export default function AddProductPage() {
 
   return (
     <>
-      <Header />
+      {/* Bungkus Header dengan Suspense untuk menangani useSearchParams */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <div className="p-6 pt-[140px] max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Tambah Produk Baru</h1>
         <form
