@@ -23,9 +23,13 @@ export default function AddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(${process.env.NEXT_PUBLIC_API_URL}/products, formData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/products`,
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
       Swal.fire("Sukses", "Produk berhasil ditambahkan!", "success");
       router.push("/admin/products");
     } catch (err) {
@@ -33,7 +37,7 @@ export default function AddProductPage() {
       Swal.fire(
         "Gagal",
         err.response?.data?.error || "Terjadi kesalahan",
-        "error"
+        "error",
       );
     }
   };

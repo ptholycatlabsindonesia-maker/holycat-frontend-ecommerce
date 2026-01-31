@@ -28,7 +28,7 @@ export default function CartPage() {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/cart, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
         withCredentials: true,
       });
       setCart(res.data);
@@ -52,7 +52,7 @@ export default function CartPage() {
         showSwalAlert(
           "Sesi Kedaluwarsa",
           "Harap login untuk melihat keranjang Anda.",
-          "warning"
+          "warning",
         );
         router.push("/login?redirect=/cart"); // Tambahkan redirect param
         return;
@@ -74,7 +74,7 @@ export default function CartPage() {
       showSwalAlert(
         "Input tidak valid",
         "Kuantitas minimal adalah 1.",
-        "error"
+        "error",
       );
       setInputQuantities((prev) => ({
         ...prev,
@@ -88,14 +88,14 @@ export default function CartPage() {
       await axios.put(
         `$\{process.env.NEXT_PUBLIC_API_URL}/cart/update/${id}`,
         { quantity: newQty },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       await fetchCart(); // Fetch ulang untuk data terbaru (termasuk subtotal)
       window.dispatchEvent(new Event("cartUpdated"));
       showSwalAlert(
         "Sukses",
         "Kuantitas keranjang berhasil diperbarui!",
-        "success"
+        "success",
       );
     } catch (err) {
       console.error(err);
@@ -127,9 +127,12 @@ export default function CartPage() {
 
     try {
       setUpdating((s) => ({ ...s, [id]: true }));
-      await axios.delete(`$\{process.env.NEXT_PUBLIC_API_URL}/cart/remove/${id}`, {
-        withCredentials: true,
-      });
+      await axios.delete(
+        `$\{process.env.NEXT_PUBLIC_API_URL}/cart/remove/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
       // Hapus item dari state lokal agar UI update instan
       setCart((prev) => ({
         ...prev,
@@ -161,7 +164,7 @@ export default function CartPage() {
 
   const handleBlur = (id) => {
     const originalQuantity = cart?.items.find(
-      (item) => item.id === id
+      (item) => item.id === id,
     )?.quantity;
     const newQuantity = inputQuantities[id];
     // Hanya update jika nilai berubah dan valid
@@ -176,7 +179,7 @@ export default function CartPage() {
       showSwalAlert(
         "Input tidak valid",
         "Kuantitas minimal adalah 1.",
-        "error"
+        "error",
       );
       setInputQuantities((prev) => ({ ...prev, [id]: originalQuantity }));
     }
@@ -236,7 +239,7 @@ export default function CartPage() {
       showSwalAlert(
         "Pilih Item",
         "Pilih setidaknya satu item untuk checkout.",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -346,7 +349,7 @@ export default function CartPage() {
                       Subtotal:{" "}
                       {formatCurrency(
                         (inputQuantities[item.id] || item.quantity) *
-                          item.product.price
+                          item.product.price,
                       )}
                     </div>
                   </div>
@@ -358,8 +361,8 @@ export default function CartPage() {
                           item.id,
                           Math.max(
                             1,
-                            (inputQuantities[item.id] || item.quantity) - 1
-                          )
+                            (inputQuantities[item.id] || item.quantity) - 1,
+                          ),
                         )
                       }
                       className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -386,7 +389,7 @@ export default function CartPage() {
                       onClick={() =>
                         handleUpdate(
                           item.id,
-                          (inputQuantities[item.id] || item.quantity) + 1
+                          (inputQuantities[item.id] || item.quantity) + 1,
                         )
                       }
                       className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
@@ -403,7 +406,7 @@ export default function CartPage() {
                       {/* Sembunyikan di mobile */}
                       {formatCurrency(
                         (inputQuantities[item.id] || item.quantity) *
-                          item.product.price
+                          item.product.price,
                       )}
                     </div>
                     <button

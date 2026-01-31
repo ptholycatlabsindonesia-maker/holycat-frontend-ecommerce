@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
     try {
       setLoading(true);
       const res = await axios.post(
-        ${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`,
         {
           email: tempEmail,
           otpCode: otpCode,
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
   const verifyAdminAccess = async (token) => {
     try {
       // PENTING: Kirim token via Header 'Authorization' agar tidak "Unauthorized"
-      const meRes = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/auth/me, {
+      const meRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`,

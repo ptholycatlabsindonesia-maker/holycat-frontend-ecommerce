@@ -73,9 +73,12 @@ export default function AdminOrdersPage() {
   const checkAdminAuth = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${"process.env.NEXT_PUBLIC_API_URL"}/auth/me`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${"process.env.NEXT_PUBLIC_API_URL"}/auth/me`,
+        {
+          withCredentials: true,
+        },
+      );
       if (res.data.role !== "ADMIN") {
         throw new Error("Akses ditolak");
       }
@@ -85,7 +88,7 @@ export default function AdminOrdersPage() {
       showSwalAlert(
         "Akses Ditolak",
         "Anda harus login sebagai Admin.",
-        "error"
+        "error",
       );
       router.push("/login?redirect=/admin/orders");
     }
@@ -94,9 +97,12 @@ export default function AdminOrdersPage() {
   // 2. Fetch Orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/admin/orders, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/orders`,
+        {
+          withCredentials: true,
+        },
+      );
       const sorted = res.data.sort((a, b) => b.id - a.id);
       setOrders(sorted);
     } catch (err) {
@@ -133,11 +139,11 @@ export default function AdminOrdersPage() {
         preConfirm: () => {
           const courier = document.getElementById("swal-input-courier").value;
           const trackingNumber = document.getElementById(
-            "swal-input-tracking"
+            "swal-input-tracking",
           ).value;
           if (!courier || !trackingNumber) {
             Swal.showValidationMessage(
-              "Kurir dan Nomor Resi tidak boleh kosong"
+              "Kurir dan Nomor Resi tidak boleh kosong",
             );
             return false;
           }
@@ -157,13 +163,13 @@ export default function AdminOrdersPage() {
       const res = await axios.put(
         `$\{process.env.NEXT_PUBLIC_API_URL}/admin/orders/${orderId}/status`,
         payload,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setOrders((prev) => prev.map((o) => (o.id === orderId ? res.data : o)));
       showSwalAlert(
         "Berhasil",
         `Status order #${orderId} diperbarui.`,
-        "success"
+        "success",
       );
     } catch (err) {
       console.error("Update status error:", err);
@@ -329,7 +335,7 @@ export default function AdminOrdersPage() {
                     <td className="p-3 text-center">
                       <span
                         className={`px-2 py-1 rounded text-xs font-semibold ${getStatusStyle(
-                          order.status
+                          order.status,
                         )}`}
                       >
                         {order.status.replace("_", " ")}

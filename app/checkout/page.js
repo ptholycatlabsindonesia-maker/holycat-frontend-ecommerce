@@ -47,14 +47,14 @@ export default function CheckoutPage() {
     const fetchCart = async () => {
       setLoadingCart(true);
       try {
-        const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/cart, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
           withCredentials: true,
         });
         if (!res.data || res.data.items.length === 0) {
           showSwalAlert(
             "Keranjang Kosong",
             "Tidak ada item di keranjang.",
-            "warning"
+            "warning",
           );
           router.push("/cart");
           return;
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
             "/login?redirect=/checkout" +
               (searchParams.get("items")
                 ? `?items=${searchParams.get("items")}`
-                : "")
+                : ""),
           );
         } else {
           setError("Gagal memuat data keranjang.");
@@ -84,9 +84,12 @@ export default function CheckoutPage() {
     const fetchUser = async () => {
       setLoadingUser(true);
       try {
-        const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/auth/me, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+          {
+            withCredentials: true,
+          },
+        );
         setUser(res.data);
       } catch (err) {
         console.error("Fetch user error:", err);
@@ -106,12 +109,12 @@ export default function CheckoutPage() {
         setSelectedShippingService(null); // Reset pilihan saat ganti kurir
         try {
           const res = await axios.post(
-            ${process.env.NEXT_PUBLIC_API_URL}/api/shipping/cost,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/shipping/cost`,
             {
               courier: selectedCourier,
               city: user.city,
               // weight: 1000 // Bisa kirim berat total di sini jika sudah ada di DB
-            }
+            },
           );
           setShippingOptions(res.data);
         } catch (err) {
@@ -130,7 +133,7 @@ export default function CheckoutPage() {
       return { itemsToCheckout: [], subTotal: 0 };
     }
     const filteredItems = cart.items.filter((item) =>
-      selectedItemIds.includes(item.id)
+      selectedItemIds.includes(item.id),
     );
 
     if (filteredItems.length === 0 && cart.items.length > 0) {
@@ -140,7 +143,7 @@ export default function CheckoutPage() {
 
     const total = filteredItems.reduce(
       (sum, item) => sum + item.quantity * item.product.price,
-      0
+      0,
     );
 
     return { itemsToCheckout: filteredItems, subTotal: total };
@@ -159,7 +162,7 @@ export default function CheckoutPage() {
       showSwalAlert(
         "Alamat Belum Lengkap",
         "Harap lengkapi alamat & kota di profil Anda.",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -169,7 +172,7 @@ export default function CheckoutPage() {
       showSwalAlert(
         "Pilih Pengiriman",
         "Harap pilih jasa pengiriman terlebih dahulu.",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -178,7 +181,7 @@ export default function CheckoutPage() {
     setError(null);
     try {
       const res = await axios.post(
-        ${process.env.NEXT_PUBLIC_API_URL}/orders/create,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/create`,
         {
           paymentMethod,
           cartItemIds: selectedItemIds,
@@ -188,7 +191,7 @@ export default function CheckoutPage() {
             selectedShippingService.service
           }`,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       window.dispatchEvent(new Event("cartUpdated"));

@@ -25,7 +25,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export default function AdminReportsPage() {
@@ -57,11 +57,11 @@ export default function AdminReportsPage() {
     setLoading(true);
     try {
       const res = await axios.get(
-        ${process.env.NEXT_PUBLIC_API_URL}/admin/reports/orders,
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/reports/orders`,
         {
           params: filters,
           withCredentials: true,
-        }
+        },
       );
       setOrders(res.data.orders);
       setSummary(res.data.summary);
@@ -144,7 +144,7 @@ export default function AdminReportsPage() {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `report_sales_${filters.startDate}_to_${filters.endDate}.csv`
+      `report_sales_${filters.startDate}_to_${filters.endDate}.csv`,
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
@@ -344,8 +344,8 @@ export default function AdminReportsPage() {
                           order.status === "Selesai"
                             ? "bg-green-100 text-green-800"
                             : order.status === "Dibatalkan"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-yellow-100 text-yellow-800"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
                         {order.status.replace("_", " ")}

@@ -18,7 +18,9 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/products);
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products`,
+      );
       // Sort produk terbaru di atas (asumsi ID besar = baru)
       const sorted = res.data.sort((a, b) => b.id - a.id);
       setProducts(sorted);
@@ -51,9 +53,12 @@ export default function AdminProductsPage() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`$\{process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
-          withCredentials: true,
-        });
+        await axios.delete(
+          `$\{process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+          {
+            withCredentials: true,
+          },
+        );
         Swal.fire("Terhapus!", "Produk berhasil dihapus.", "success");
         fetchProducts(); // Refresh list
       } catch (err) {
@@ -76,7 +81,7 @@ export default function AdminProductsPage() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = filteredProducts.slice(
     indexOfFirstItem,
-    indexOfLastItem
+    indexOfLastItem,
   );
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
