@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // [FIX] Import Link ditambahkan
 import { showSwalAlert } from "../../lib/swalHelper";
 
 export default function AdminLoginPage() {
@@ -25,9 +26,13 @@ export default function AdminLoginPage() {
   const onLoginSubmit = async (data) => {
     try {
       setLoading(true);
-      const res = await axios.post("${process.env.NEXT_PUBLIC_API_URL}/auth/login", data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       // KASUS 1: Butuh Verifikasi OTP
       if (res.data.requireVerify) {
@@ -59,7 +64,7 @@ export default function AdminLoginPage() {
           email: tempEmail,
           otpCode: otpCode,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       // Verifikasi sukses, dapat token
@@ -80,12 +85,15 @@ export default function AdminLoginPage() {
   const verifyAdminAccess = async (token) => {
     try {
       // PENTING: Kirim token via Header 'Authorization' agar tidak "Unauthorized"
-      const meRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const meRes = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (meRes.data.role !== "ADMIN") {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`);
@@ -198,9 +206,13 @@ export default function AdminLoginPage() {
 
         {step === "login" && (
           <div className="mt-6 text-center">
-            <a href="/" className="text-gray-500 hover:text-gray-300 text-sm">
+            {/* [FIX] Ganti <a> dengan <Link> */}
+            <Link
+              href="/"
+              className="text-gray-500 hover:text-gray-300 text-sm"
+            >
               Kembali ke Toko
-            </a>
+            </Link>
           </div>
         )}
       </div>

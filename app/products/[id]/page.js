@@ -1,6 +1,7 @@
 import Header from "../../components/Header";
 // Import komponen detail baru
 import ProductDetails from "./ProductDetails";
+import Link from "next/link"; // [FIX] Import Link ditambahkan
 
 async function getProduct(id) {
   try {
@@ -8,7 +9,9 @@ async function getProduct(id) {
     const numericId = parseInt(id);
     if (isNaN(numericId)) return null;
 
-    const res = await fetch(`$\{process.env.NEXT_PUBLIC_API_URL}/products/${numericId}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${numericId}`,
+    );
     if (!res.ok) return null;
     return res.json();
   } catch (err) {

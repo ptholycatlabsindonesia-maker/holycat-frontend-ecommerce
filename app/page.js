@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import ProductCard from "./components/ProductCard";
+import Link from "next/link"; // [FIX] Import Link ditambahkan
 
 async function getProducts() {
   try {
@@ -47,12 +48,13 @@ export default async function Home() {
               There are many variations of passages of available majority have
               suffered alteration by injected.
             </p> */}
-            <a
+            {/* [FIX] Ganti <a> dengan <Link> */}
+            <Link
               href="/products"
               className="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded transition-colors"
             >
               See All Products
-            </a>
+            </Link>
           </div>
 
           <div className="hidden lg:block lg:col-span-1 p-6 relative z-10">
@@ -151,9 +153,10 @@ export default async function Home() {
         <section id="featured">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Featured Products</h2>
-            <a href="/products" className="text-sm text-indigo-600">
+            {/* [FIX] Ganti <a> dengan <Link> */}
+            <Link href="/products" className="text-sm text-indigo-600">
               View all
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
