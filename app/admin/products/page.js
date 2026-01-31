@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // [FIX] Tambahkan Import Suspense
 import axios from "axios";
 import Header from "../../components/Header";
 import Link from "next/link";
@@ -54,7 +54,7 @@ export default function AdminProductsPage() {
     if (result.isConfirmed) {
       try {
         await axios.delete(
-          `$\{process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`,
           {
             withCredentials: true,
           },
@@ -88,14 +88,29 @@ export default function AdminProductsPage() {
   if (loading)
     return (
       <>
-        <Header />
+        {/* [FIX] Bungkus Header dengan Suspense */}
+        <Suspense
+          fallback={
+            <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+          }
+        >
+          <Header />
+        </Suspense>
         <div className="p-10 pt-[140px] text-center">Loading...</div>
       </>
     );
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <div className="p-6 pt-[140px] max-w-7xl mx-auto">
         {/* HEADER SECTION: Judul + Search + Tombol Tambah */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">

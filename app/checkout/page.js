@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react"; // [FIX] Tambahkan import Suspense
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
@@ -14,7 +14,8 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
-export default function CheckoutPage() {
+// [FIX] Pindahkan logika utama ke sub-komponen
+function CheckoutContent() {
   const [cart, setCart] = useState(null);
   const [user, setUser] = useState(null);
   const [loadingCart, setLoadingCart] = useState(true);
@@ -30,7 +31,7 @@ export default function CheckoutPage() {
   const [loadingShipping, setLoadingShipping] = useState(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // Aman digunakan di sini karena dibungkus Suspense di parent
 
   const selectedItemIds = useMemo(() => {
     const itemsParam = searchParams.get("items");
@@ -438,5 +439,18 @@ export default function CheckoutPage() {
         )}
       </div>
     </>
+  );
+}
+
+// [FIX] Export Default menggunakan Suspense
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }

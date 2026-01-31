@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState, useMemo } from "react"; // Tambahkan useMemo
+import { useEffect, useState, useMemo, Suspense } from "react"; // [FIX] Import Suspense
 import axios from "axios";
 import Link from "next/link";
 import Header from "../components/Header";
 import { showSwalAlert } from "../lib/swalHelper";
-import { useRouter, useSearchParams } from "next/navigation"; // Tambahkan useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
+import Swal from "sweetalert2";
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("id-ID", {
@@ -14,7 +15,8 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
-export default function CartPage() {
+// [FIX] Pindahkan logika utama ke sub-komponen
+function CartContent() {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +25,7 @@ export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState({}); // State baru untuk item terpilih
 
   const router = useRouter();
-  const searchParams = useSearchParams(); // Untuk membaca query params nanti (jika diperlukan)
+  const searchParams = useSearchParams(); // Hook ini aman di sini karena dibungkus Suspense di parent
 
   const fetchCart = async () => {
     setLoading(true);
@@ -86,7 +88,7 @@ export default function CartPage() {
     try {
       setUpdating((s) => ({ ...s, [id]: true }));
       await axios.put(
-        `$\{process.env.NEXT_PUBLIC_API_URL}/cart/update/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${id}`,
         { quantity: newQty },
         { withCredentials: true },
       );
@@ -128,7 +130,7 @@ export default function CartPage() {
     try {
       setUpdating((s) => ({ ...s, [id]: true }));
       await axios.delete(
-        `$\{process.env.NEXT_PUBLIC_API_URL}/cart/remove/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/remove/${id}`,
         {
           withCredentials: true,
         },
@@ -254,7 +256,9 @@ export default function CartPage() {
       <>
         {" "}
         <Header />{" "}
-        <div className="p-6 pt-5 max-w-4xl mx-auto">Loading cart...</div>{" "}
+        <div className="p-6 pt-[140px] max-w-4xl mx-auto">
+          Loading cart...
+        </div>{" "}
       </>
     );
   if (error && !cart)
@@ -262,7 +266,7 @@ export default function CartPage() {
       <>
         {" "}
         <Header />{" "}
-        <div className="p-6 pt-5 max-w-4xl mx-auto text-red-600">
+        <div className="p-6 pt-[140px] max-w-4xl mx-auto text-red-600">
           {" "}
           Error: {error}{" "}
         </div>{" "}
@@ -446,5 +450,15 @@ export default function CartPage() {
   );
 }
 
-// Import Swal di akhir untuk mengatasi potensi masalah SSR (meskipun use client seharusnya cukup)
-import Swal from "sweetalert2";
+// [FIX] Export Default menggunakan Suspense untuk membungkus komponen konten
+export default function CartPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+      }
+    >
+      <CartContent />
+    </Suspense>
+  );
+}

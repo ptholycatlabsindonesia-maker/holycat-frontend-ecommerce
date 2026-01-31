@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // [FIX] Tambahkan import Suspense
 import axios from "axios";
 import Header from "../../components/Header";
 import {
@@ -13,10 +13,8 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-// --- PERBAIKAN IMPORT PDF ---
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; // Import sebagai variable
-// ----------------------------
+import autoTable from "jspdf-autotable";
 
 // Registrasi komponen Chart.js
 ChartJS.register(
@@ -152,7 +150,7 @@ export default function AdminReportsPage() {
     document.body.removeChild(link);
   };
 
-  // --- LOGIKA EXPORT PDF (PERBAIKAN) ---
+  // --- LOGIKA EXPORT PDF ---
   const downloadPDF = () => {
     if (orders.length === 0) return;
 
@@ -191,13 +189,13 @@ export default function AdminReportsPage() {
       tableRows.push(orderData);
     });
 
-    // 3. Generate Tabel menggunakan AutoTable (Cara Eksplisit)
+    // 3. Generate Tabel menggunakan AutoTable
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 50, // Mulai setelah header teks
+      startY: 50,
       theme: "grid",
-      headStyles: { fillColor: [68, 175, 124] }, // Warna Hijau Holycat
+      headStyles: { fillColor: [68, 175, 124] },
       styles: { fontSize: 10 },
     });
 
@@ -207,7 +205,15 @@ export default function AdminReportsPage() {
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <div className="p-6 pt-[140px] max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-[#2b2b2b]">
           Laporan Penjualan
@@ -272,7 +278,6 @@ export default function AdminReportsPage() {
               <i className="fas fa-file-csv"></i> Export CSV
             </button>
 
-            {/* Tombol PDF Baru */}
             <button
               onClick={downloadPDF}
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm h-10 flex items-center gap-2"

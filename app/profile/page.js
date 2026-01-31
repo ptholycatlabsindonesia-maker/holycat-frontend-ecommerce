@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react"; // <-- PERBAIKAN DI SINI
+import { useState, useEffect, useCallback, Suspense } from "react"; // [FIX] Tambahkan import Suspense
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -31,9 +31,12 @@ export default function ProfilePage() {
     setLoading(true);
     try {
       // Menggunakan /auth/me untuk mendapatkan data user saat ini
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
+        {
+          withCredentials: true,
+        },
+      );
       const data = res.data;
       setUser(data);
 
@@ -70,7 +73,7 @@ export default function ProfilePage() {
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
         updatePayload,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       // Memperbarui state user lokal dan memicu event global
@@ -88,7 +91,14 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <>
-        <Header />
+        {/* [FIX] Bungkus Header dengan Suspense */}
+        <Suspense
+          fallback={
+            <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+          }
+        >
+          <Header />
+        </Suspense>
         <div className="p-6 pt-5 -w-lg mx-auto text-center">
           Loading Profile...
         </div>
@@ -102,7 +112,15 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <div className="p-6 pt-[140px] max-w-lg mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-[#2b2b2b]">
           Edit Profil Anda

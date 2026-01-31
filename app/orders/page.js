@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react"; // [FIX] Tambahkan import Suspense
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import { showSwalAlert } from "../lib/swalHelper";
 import Link from "next/link";
-import Swal from "sweetalert2"; // Kita butuh Swal untuk konfirmasi
+import Swal from "sweetalert2";
 
 // Helper Status Style
 const getStatusStyle = (status) => {
@@ -93,14 +93,14 @@ export default function OrdersPage() {
     try {
       // Panggil endpoint baru di backend
       await axios.put(
-        `$\{process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/receive`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}/receive`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       // Update state lokal biar langsung berubah tanpa reload
       setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: "Selesai" } : o))
+        prev.map((o) => (o.id === orderId ? { ...o, status: "Selesai" } : o)),
       );
 
       showSwalAlert("Terima Kasih!", "Pesanan telah diselesaikan.", "success");
@@ -112,7 +112,14 @@ export default function OrdersPage() {
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
       <div className="pt-[100px]"></div> {/* Spacer Header */}
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-[#2b2b2b]">

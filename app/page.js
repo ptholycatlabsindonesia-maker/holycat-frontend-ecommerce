@@ -1,6 +1,7 @@
+import { Suspense } from "react"; // [FIX] Tambahkan import Suspense
 import Header from "./components/Header";
 import ProductCard from "./components/ProductCard";
-import Link from "next/link"; // [FIX] Import Link ditambahkan
+import Link from "next/link";
 
 async function getProducts() {
   try {
@@ -24,10 +25,18 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <main className="max-w-7xl mx-auto px-6 py-12 pt-[140px]">
         {/* Hero */}
-        <section className="relative  grid grid-cols-1 lg:grid-cols-3 gap-6 items-center mb-12 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl overflow-hidden">
+        <section className="relative grid grid-cols-1 lg:grid-cols-3 gap-6 items-center mb-12 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl overflow-hidden">
           {/* Decorative elements */}
           <div className="absolute top-10 right-20 w-32 h-32 bg-slate-700/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 left-20 w-40 h-40 bg-slate-700/20 rounded-full blur-3xl"></div>
@@ -44,11 +53,6 @@ export default async function Home() {
               <br />
               AKHIR TAHUN
             </h1>
-            {/* <p className="mb-8 max-w-lg text-gray-300">
-              There are many variations of passages of available majority have
-              suffered alteration by injected.
-            </p> */}
-            {/* [FIX] Ganti <a> dengan <Link> */}
             <Link
               href="/products"
               className="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded transition-colors"
@@ -153,7 +157,6 @@ export default async function Home() {
         <section id="featured">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Featured Products</h2>
-            {/* [FIX] Ganti <a> dengan <Link> */}
             <Link href="/products" className="text-sm text-indigo-600">
               View all
             </Link>

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react"; // [FIX] Tambahkan Suspense
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -43,9 +43,13 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setServerError(null);
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       // JIKA AKUN BELUM VERIFIKASI
       if (res.data.requireVerify) {
@@ -81,7 +85,7 @@ export default function LoginPage() {
           email: tempEmail,
           otpCode: otpCode,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       handleLoginSuccess(res);
@@ -110,7 +114,7 @@ export default function LoginPage() {
     await showSwalAlert(
       "Berhasil!",
       "Selamat datang kembali di Holycat!",
-      "success"
+      "success",
     );
     router.push("/");
   };
@@ -123,7 +127,15 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <section
         className={`auth-section ${COLOR_LIGHT_GREEN_BG} flex min-h-screen items-center justify-center p-10 pt-[140px]`}
       >

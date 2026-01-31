@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react"; // [FIX] Tambah Suspense
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
@@ -74,7 +74,7 @@ export default function AdminOrdersPage() {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${"process.env.NEXT_PUBLIC_API_URL"}/auth/me`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
         {
           withCredentials: true,
         },
@@ -161,7 +161,7 @@ export default function AdminOrdersPage() {
 
     try {
       const res = await axios.put(
-        `$\{process.env.NEXT_PUBLIC_API_URL}/admin/orders/${orderId}/status`,
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/orders/${orderId}/status`,
         payload,
         { withCredentials: true },
       );
@@ -203,21 +203,43 @@ export default function AdminOrdersPage() {
   if (loading)
     return (
       <>
-        <Header />
+        {/* [FIX] Bungkus Header dengan Suspense */}
+        <Suspense
+          fallback={
+            <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+          }
+        >
+          <Header />
+        </Suspense>
         <div className="p-6 pt-[140px] text-center">Loading...</div>
       </>
     );
   if (error)
     return (
       <>
-        <Header />
+        {/* [FIX] Bungkus Header dengan Suspense */}
+        <Suspense
+          fallback={
+            <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+          }
+        >
+          <Header />
+        </Suspense>
         <div className="p-6 pt-[140px] text-center text-red-600">{error}</div>
       </>
     );
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <div className="p-6 pt-[140px] max-w-7xl mx-auto">
         {/* HEADER & FILTER SECTION */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
