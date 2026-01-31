@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react"; // [FIX] Tambahkan Suspense
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -42,14 +42,16 @@ export default function RegisterPage() {
 
       // Kirim data registrasi ke backend
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        phone: data.phone,
-        city: data.city,
-        address: data.address,
-      });
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+        {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          phone: data.phone,
+          city: data.city,
+          address: data.address,
+        },
+      );
 
       if (res.data.requireOtp) {
         setTempEmail(data.email);
@@ -82,7 +84,7 @@ export default function RegisterPage() {
           email: tempEmail,
           otpCode: otpCode,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       // Simpan token dev jika ada (sama seperti login)
@@ -100,7 +102,7 @@ export default function RegisterPage() {
       await showSwalAlert(
         "Akun Terverifikasi!",
         "Selamat datang di Holycat!",
-        "success"
+        "success",
       );
       router.push("/"); // Redirect ke home
     } catch (err) {
@@ -115,7 +117,15 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Header />
+      {/* [FIX] Bungkus Header dengan Suspense */}
+      <Suspense
+        fallback={
+          <div className="h-[70px] bg-white shadow-md fixed top-0 w-full z-50"></div>
+        }
+      >
+        <Header />
+      </Suspense>
+
       <section
         className={`auth-section ${COLOR_LIGHT_GREEN_BG} flex min-h-screen items-center justify-center p-10 pt-[140px]`}
       >
