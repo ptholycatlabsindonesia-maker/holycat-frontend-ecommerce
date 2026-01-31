@@ -13,9 +13,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get(${process.env.NEXT_PUBLIC_API_URL}/admin/stats, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/admin/stats`,
+          {
+            withCredentials: true,
+          },
+        );
         setStats(res.data);
       } catch (err) {
         // Jika gagal (misal 403 Forbidden), redirect ke login admin
@@ -138,8 +141,8 @@ export default function AdminDashboard() {
                                       order.status === "Selesai"
                                         ? "bg-green-100 text-green-800"
                                         : order.status === "Menunggu_Pembayaran"
-                                        ? "bg-yellow-100 text-yellow-800"
-                                        : "bg-gray-100 text-gray-800"
+                                          ? "bg-yellow-100 text-yellow-800"
+                                          : "bg-gray-100 text-gray-800"
                                     }`}
                     >
                       {order.status.replace("_", " ")}
