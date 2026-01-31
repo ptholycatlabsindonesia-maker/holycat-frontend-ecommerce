@@ -1,0 +1,55 @@
+/* ================================================================= */
+/* 1. IMPORT EKSTERNAL (HARUS DI POSISI PALING ATAS) */
+/* ================================================================= */
+
+/* Google Fonts: Dongle (Default Body Font) */
+@import url("https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&display=swap");
+/* Google Fonts: Lilita One (Header/Logo Font) */
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One:wght@400&display=swap");
+/* Font Awesome Icons */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css");
+
+/* ================================================================= */
+/* 2. TAILWIND DIRECTIVES */
+/* ================================================================= */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================= */
+/* 3. FONT STYLES GLOBAL (Menggunakan @layer base) */
+/* ================================================================= */
+
+@layer base {
+  /* Mengatur font BODY default ke Dongle */
+  body {
+    font-family: "Dongle", sans-serif;
+    /* Menghilangkan margin atas default dari Next.js */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Kelas helper untuk Logo, Heading, dan Cart Badge (seperti di desain kustom) */
+  .font-lilita {
+    font-family: "Lilita One", cursive;
+    font-weight: 400;
+  }
+
+  /* === TAMBAHAN CSS UNTUK MENGHILANGKAN PANAH INPUT ANGKA === */
+
+  /* Untuk browser Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Untuk browser Chrome, Safari, Edge, dan Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@import "tailwindcss";
