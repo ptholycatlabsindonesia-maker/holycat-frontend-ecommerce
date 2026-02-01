@@ -182,3 +182,4 @@ export default async function Home() {
     </div>
   );
 }
+console.log("DEBUG ENV FRONTEND =>", process.env.NEXT_PUBLIC_API_URL);
