@@ -1,4 +1,4 @@
-"use client";
+import EnvDebugger from "./components/EnvDebugger";
 
 // [BARU] Impor 'Script' dari 'next/script'
 import Script from "next/script";
@@ -30,7 +30,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  console.log("DEBUG ENV FRONTEND =>", process.env.NEXT_PUBLIC_API_URL);
   // [BARU] Ambil Client Key dari environment (jika perlu, atau hardcode untuk sandbox)
   // Anda harus membuat file .env.local di frontend dan menambahkannya
   // NEXT_PUBLIC_MIDTRANS_CLIENT_KEY="SB-Mid-client-..."
@@ -53,6 +52,7 @@ export default function RootLayout({ children }) {
       >
         <div className="pt-5">{children}</div>
         <ToastProvider />
+        <EnvDebugger />
       </body>
     </html>
   );
