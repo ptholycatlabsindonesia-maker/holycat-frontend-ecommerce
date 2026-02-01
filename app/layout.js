@@ -1,3 +1,5 @@
+"use client";
+
 // [BARU] Impor 'Script' dari 'next/script'
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -28,6 +30,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  console.log("DEBUG ENV FRONTEND =>", process.env.NEXT_PUBLIC_API_URL);
   // [BARU] Ambil Client Key dari environment (jika perlu, atau hardcode untuk sandbox)
   // Anda harus membuat file .env.local di frontend dan menambahkannya
   // NEXT_PUBLIC_MIDTRANS_CLIENT_KEY="SB-Mid-client-..."

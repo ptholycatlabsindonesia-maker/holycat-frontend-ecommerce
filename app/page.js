@@ -159,10 +159,6 @@ export default async function Home() {
             <h2 className="text-2xl font-bold">Featured Products</h2>
             <Link href="/products" className="text-sm text-indigo-600">
               View all
-              {console.log(
-                "DEBUG ENV FRONTEND =>",
-                process.env.NEXT_PUBLIC_API_URL,
-              )}
             </Link>
           </div>
 
