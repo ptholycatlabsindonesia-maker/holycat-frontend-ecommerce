@@ -6,7 +6,7 @@ import Link from "next/link";
 async function getProducts() {
   try {
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products`;
-    
+
     console.log("[Frontend SSR] Environment Check:");
     console.log("  - NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
     console.log("  - NODE_ENV:", process.env.NODE_ENV);
@@ -22,7 +22,10 @@ async function getProducts() {
 
     if (!res.ok) {
       const errorBody = await res.text();
-      console.error("[Frontend SSR] Response body:", errorBody.substring(0, 200));
+      console.error(
+        "[Frontend SSR] Response body:",
+        errorBody.substring(0, 200),
+      );
       throw new Error(
         `Backend returned status ${res.status}: ${res.statusText}`,
       );
