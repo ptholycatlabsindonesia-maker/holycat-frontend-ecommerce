@@ -5,16 +5,42 @@ import Link from "next/link";
 
 async function getProducts() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-    if (!res.ok) throw new Error("Failed to fetch products");
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products`;
+    
+    console.log("[Frontend SSR] Environment Check:");
+    console.log("  - NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
+    console.log("  - NODE_ENV:", process.env.NODE_ENV);
+    console.log("  - Full URL being fetched:", apiUrl);
+
+    const res = await fetch(apiUrl, {
+      headers: {
+        "User-Agent": "NextJS-SSR/Frontend",
+      },
+    });
+
+    console.log("[Frontend SSR] Response Status:", res.status, res.statusText);
+
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error("[Frontend SSR] Response body:", errorBody.substring(0, 200));
+      throw new Error(
+        `Backend returned status ${res.status}: ${res.statusText}`,
+      );
+    }
 
     const contentType = res.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       throw new Error("Received non-JSON response from server");
     }
 
-    return res.json();
+    const data = await res.json();
+    console.log("[Frontend SSR] Successfully fetched", data.length, "products");
+    return data;
   } catch (err) {
+    console.error(
+      "[Frontend SSR] Error fetching products:",
+      err.message || err,
+    );
     // Silently return null when backend is unreachable to avoid noisy server logs
     return null;
   }
