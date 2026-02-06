@@ -1,56 +1,46 @@
-import { Suspense } from "react"; // [FIX] Tambahkan import Suspense
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
 import Header from "./components/Header";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 
-async function getProducts() {
-  try {
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products`;
+export default function Home() {
+  const [products, setProducts] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    console.log("[Frontend SSR] Environment Check:");
-    console.log("  - NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
-    console.log("  - NODE_ENV:", process.env.NODE_ENV);
-    console.log("  - Full URL being fetched:", apiUrl);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
-    const res = await fetch(apiUrl, {
-      headers: {
-        "User-Agent": "NextJS-SSR/Frontend",
-      },
-    });
+        console.log("[Frontend Client] Fetching products from:", apiUrl);
 
-    console.log("[Frontend SSR] Response Status:", res.status, res.statusText);
+        const res = await fetch(apiUrl, {
+          headers: {
+            "User-Agent": "NextJS-Client/Frontend",
+          },
+        });
 
-    if (!res.ok) {
-      const errorBody = await res.text();
-      console.error(
-        "[Frontend SSR] Response body:",
-        errorBody.substring(0, 200),
-      );
-      throw new Error(
-        `Backend returned status ${res.status}: ${res.statusText}`,
-      );
-    }
+        console.log("[Frontend Client] Response Status:", res.status);
 
-    const contentType = res.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Received non-JSON response from server");
-    }
+        if (!res.ok) {
+          throw new Error(`Failed to fetch products: ${res.status}`);
+        }
 
-    const data = await res.json();
-    console.log("[Frontend SSR] Successfully fetched", data.length, "products");
-    return data;
-  } catch (err) {
-    console.error(
-      "[Frontend SSR] Error fetching products:",
-      err.message || err,
-    );
-    // Silently return null when backend is unreachable to avoid noisy server logs
-    return null;
-  }
-}
+        const data = await res.json();
+        console.log(`[Frontend Client] Successfully fetched ${data.length} products`);
+        setProducts(data);
+      } catch (err) {
+        console.error("[Frontend Client] Error fetching products:", err.message);
+        setProducts(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-export default async function Home() {
-  const products = await getProducts();
+    fetchProducts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
@@ -192,7 +182,11 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products === null ? (
+            {isLoading ? (
+              <div className="col-span-1 sm:col-span-2 lg:col-span-4 bg-white p-6 rounded shadow">
+                <p className="text-center text-gray-600">Loading products...</p>
+              </div>
+            ) : products === null ? (
               <div className="col-span-1 sm:col-span-2 lg:col-span-4 bg-white p-6 rounded shadow">
                 <p className="text-center text-gray-600">
                   Products currently unavailable — the backend may be down.
