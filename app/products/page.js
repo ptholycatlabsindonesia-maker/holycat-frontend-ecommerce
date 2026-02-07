@@ -1,41 +1,61 @@
+"use client";
+
 import Link from "next/link";
 import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-// Fungsi getProducts menerima search DAN category
-async function getProducts(search, category) {
-  try {
-    // Bangun URL dengan Query Params
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-    if (category) params.append("category", category);
+export default function ProductsPage() {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const searchParams = useSearchParams();
+  const search = searchParams?.get("search") || "";
+  const category = searchParams?.get("category") || "";
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-    // Gunakan no-store agar data selalu fresh
-    const res = await fetch(url, { cache: "no-store" });
+        // Bangun URL dengan Query Params
+        const params = new URLSearchParams();
+        if (search) params.append("search", search);
+        if (category) params.append("category", category);
 
-    if (!res.ok) throw new Error("Failed to fetch products");
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`;
 
-    const contentType = res.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Received non-JSON response from server");
-    }
+        console.log("[Frontend Products] Fetching from:", url);
 
-    return res.json();
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    return [];
-  }
-}
+        const res = await fetch(url);
 
-// Next.js 15: searchParams adalah Promise
-export default async function ProductsPage(props) {
-  const searchParams = await props.searchParams; // Tunggu params
-  const search = searchParams?.search || "";
-  const category = searchParams?.category || "";
+        if (!res.ok) {
+          throw new Error(`Failed to fetch products: ${res.status}`);
+        }
 
-  const products = await getProducts(search, category);
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Received non-JSON response from server");
+        }
+
+        const data = await res.json();
+        console.log(
+          `[Frontend Products] Successfully fetched ${data.length} products`,
+        );
+        setProducts(data || []);
+      } catch (err) {
+        console.error("[Frontend Products] Error fetching products:", err);
+        setError(err.message);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [search, category]);
 
   // Helper untuk menampilkan judul halaman yang dinamis
   const getPageTitle = () => {
@@ -51,11 +71,30 @@ export default async function ProductsPage(props) {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold capitalize">{getPageTitle()}</h1>
           <span className="text-gray-600 font-medium">
-            {products.length} Produk ditemukan
+            {!isLoading && `${products.length} Produk ditemukan`}
           </span>
         </div>
 
-        {products.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin">
+              <i className="fas fa-spinner text-4xl text-[#44af7c]"></i>
+            </div>
+            <p className="text-xl text-gray-500 mt-4">Loading produk...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-20 bg-red-50 rounded-lg border border-red-200">
+            <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+            <p className="text-xl text-red-600 mb-4">⚠️ Gagal memuat produk</p>
+            <p className="text-gray-600 mb-4">Error: {error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-[#44af7c] text-white px-6 py-2 rounded hover:bg-[#3b9a6d]"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        ) : products.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-lg shadow">
             <p className="text-xl text-gray-500">
               Tidak ada produk ditemukan

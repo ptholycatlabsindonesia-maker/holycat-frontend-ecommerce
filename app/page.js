@@ -29,10 +29,15 @@ export default function Home() {
         }
 
         const data = await res.json();
-        console.log(`[Frontend Client] Successfully fetched ${data.length} products`);
+        console.log(
+          `[Frontend Client] Successfully fetched ${data.length} products`,
+        );
         setProducts(data);
       } catch (err) {
-        console.error("[Frontend Client] Error fetching products:", err.message);
+        console.error(
+          "[Frontend Client] Error fetching products:",
+          err.message,
+        );
         setProducts(null);
       } finally {
         setIsLoading(false);
