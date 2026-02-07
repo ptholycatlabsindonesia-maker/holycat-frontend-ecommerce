@@ -14,7 +14,7 @@
     "chart.js": "^4.5.1",
     "jspdf": "^4.0.0",
     "jspdf-autotable": "^5.0.7",
-    "next": "15.5.4",
+    "next": "16.1.6",
     "react": "19.1.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.1.0",
